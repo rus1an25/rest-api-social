@@ -45,8 +45,8 @@ class profileController {
                     const fileName = await fileService.saveFile(req.files.profilePicture, req.params.userId);
                     await User.findByIdAndUpdate(req.params.userId, {
                         $set:req.body,
-                        profilePicture: `http://localhost:5000/photos/${req.params.userId}/large/${fileName}`,
-                        thumbnail: `http://localhost:5000/photos/${req.params.userId}/small/small_${fileName}`
+                        profilePicture: `${process.env.API_URL}/photos/${req.params.userId}/large/${fileName}`,
+                        thumbnail: `${process.env.API_URL}/photos/${req.params.userId}/small/small_${fileName}`
                     });
                     const user = await User.findById(req.params.userId);
                     const profilePicture = user.profilePicture;
