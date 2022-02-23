@@ -21,62 +21,62 @@ class authController {
         }
     }
 
-    async registrUser (req, res) {
-        try {
-            const errors = await validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(200).json({statusCode: 1, errors});
-            }
-            const {userName, email, password} = req.body;
-            const candidate = await User.findOne({userName})
-            if (candidate) {
-                return res.status(200).json({statusCode: 1, message: "User with the same name already exists"});
-            }
-            const hashPassword = await bcrypt.hashSync(password, 7);
-            const user = await new User({userName, email, password: hashPassword});
-            await user.save();
-            fs.mkdirSync(`./images/photos/${user._id}/large`, { recursive: true });
-            fs.mkdirSync(`./images/photos/${user._id}/small`);
-            return res.status(200).json({id: user._id, statusCode: 0, message: "User is registered successfully!"});
-        } catch(e) {
-            return res.json(e);
-        }
-    }
+    // async registrUser (req, res) {
+    //     try {
+    //         const errors = await validationResult(req);
+    //         if (!errors.isEmpty()) {
+    //             return res.status(200).json({statusCode: 1, errors});
+    //         }
+    //         const {userName, email, password} = req.body;
+    //         const candidate = await User.findOne({userName})
+    //         if (candidate) {
+    //             return res.status(200).json({statusCode: 1, message: "User with the same name already exists"});
+    //         }
+    //         const hashPassword = await bcrypt.hashSync(password, 7);
+    //         const user = await new User({userName, email, password: hashPassword});
+    //         await user.save();
+    //         fs.mkdirSync(`./images/photos/${user._id}/large`, { recursive: true });
+    //         fs.mkdirSync(`./images/photos/${user._id}/small`);
+    //         return res.status(200).json({id: user._id, statusCode: 0, message: "User is registered successfully!"});
+    //     } catch(e) {
+    //         return res.json(e);
+    //     }
+    // }
 
-    async loginUser (req, res) {
-        try {
-            const {userName, password} = req.body;
-            const user = await User.findOne({userName});
-            if (!user) {
-                res.status(200).json({statusCode: 1, message: "That user not found!"});
-            } else {
-                const validPassword = bcrypt.compareSync(password, user.password);
-                !validPassword && res.status(200).json({statusCode: 1, message: "That password is wrong!"});
-                if (!user.isLogged) {
-                    await user.updateOne({isLogged: true});
-                    return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 0, message: "User is logged successfully!"})
-                } else {
-                    return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 1, message: "User already is logged!"})
-                }
-            }
-        } catch (e) {
-            return res.json(e);
-        }
-    }
+    // async loginUser (req, res) {
+    //     try {
+    //         const {userName, password} = req.body;
+    //         const user = await User.findOne({userName});
+    //         if (!user) {
+    //             res.status(200).json({statusCode: 1, message: "That user not found!"});
+    //         } else {
+    //             const validPassword = bcrypt.compareSync(password, user.password);
+    //             !validPassword && res.status(200).json({statusCode: 1, message: "That password is wrong!"});
+    //             if (!user.isLogged) {
+    //                 await user.updateOne({isLogged: true});
+    //                 return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 0, message: "User is logged successfully!"})
+    //             } else {
+    //                 return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 1, message: "User already is logged!"})
+    //             }
+    //         }
+    //     } catch (e) {
+    //         return res.json(e);
+    //     }
+    // }
 
-    async logoutUser (req, res) {
-        try {
-            const user = await User.findById(req.body._id);
-            if (user.isLogged) {
-                await user.updateOne({isLogged: false});
-                return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 0, message: "User has been logouted successfully!"})
-            } else {
-                return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 1, message: "User already has been logouted!"})
-            }
-        } catch (e) {
-            return res.json(e);
-        }
-    }
+    // async logoutUser (req, res) {
+    //     try {
+    //         const user = await User.findById(req.body._id);
+    //         if (user.isLogged) {
+    //             await user.updateOne({isLogged: false});
+    //             return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 0, message: "User has been logouted successfully!"})
+    //         } else {
+    //             return res.status(200).json({id: user._id, userName: user.userName, isLogged: user.isLogged, statusCode: 1, message: "User already has been logouted!"})
+    //         }
+    //     } catch (e) {
+    //         return res.json(e);
+    //     }
+    // }
 
     //New registration
     //=============================================================================

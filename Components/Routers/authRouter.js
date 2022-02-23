@@ -7,10 +7,10 @@ const {body} = require("express-validator");
 
 router.get("/data", authController.getAuthData);
 
-router.post("/register", [
-    check('userName', 'Pole cant be is empty').notEmpty(),
-    check('password', 'Password dont be less than 4 and more than 12 symbols').isLength({min: 4, max: 12})
-], authController.registrUser);
+// router.post("/register", [
+//     check('userName', 'Pole cant be is empty').notEmpty(),
+//     check('password', 'Password dont be less than 4 and more than 12 symbols').isLength({min: 4, max: 12})
+// ], authController.registrUser);
 
 router.post("/registration",
     body('userName').notEmpty(),

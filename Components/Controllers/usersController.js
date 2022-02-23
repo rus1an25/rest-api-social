@@ -6,7 +6,7 @@ class usersController {
     async getAllUsers (req, res) {
         try {
             const users = await usersService.getUsers();
-            console.log(users)
+            console.log(users);
             res.status(200).json(users);
         } catch (e) {
             return res.json(e);
@@ -16,6 +16,7 @@ class usersController {
     async getUsersByPortion (req, res) {
         try {
             const users = await usersService.getUsers(req.params.currentUserID, req.params.sortParam);
+            console.log(users);
             if (users.length !== 0) {
                 const currentUserFollowings = await User.findById(req.params.currentUserID);
                 let page = req.params.pageNumber;
