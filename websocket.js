@@ -32,7 +32,7 @@ const websocketAPI = () => {
     const conversationsOnline = {};
 
     wsServer.on('request', function(request) {
-        const connection = request.accept(null, 'http://localhost:3000');
+        const connection = request.accept(null, process.env.CLIENT_URL);
 
         connection.on('message', async (message) => {
             let currentUserID = null;
