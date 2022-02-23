@@ -19,7 +19,7 @@ const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors({
-    "origin": "https://protected-thicket-71263.herokuapp.com/api",
+    "origin": "https://api-app-social.herokuapp.com/api",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
