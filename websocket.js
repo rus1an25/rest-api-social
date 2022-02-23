@@ -1,6 +1,5 @@
 const webSocketsServerPort = 8000;
 const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require("helmet");
 const webSocketServer = require('websocket').server;
@@ -8,13 +7,6 @@ const http = require('http');
 const WebSocketAPI = require('./Components/Services/webSocketAPI');
 
 const webSocket = new WebSocketAPI();
-app.use(cors({
-    "origin": "https://socia1.herokuapp.com",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204,
-    "credentials": true
-}));
 
 const websocketAPI = () => {
     const app = express();
