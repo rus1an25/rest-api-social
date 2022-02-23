@@ -19,7 +19,7 @@ const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors({
-    "origin": "https://radiant-crag-34053.herokuapp.com",
+    "origin": "https://protected-thicket-71263.herokuapp.com",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
