@@ -13,7 +13,7 @@ const postsRouter = require('./Components/Routers/postsRouter.js');
 const profileRouter = require('./Components/Routers/profileRouter');
 const messagesRouter = require('./Components/Routers/messagesRouter');
 const conversationsRouter = require('./Components/Routers/conversationsRouter');
-const websocketAPI = require('./websocket');
+const websocket = require('./websocket');
 const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
 const PORT = process.env.PORT || 5000;
@@ -50,7 +50,7 @@ try {
             useUnifiedTopology: true
         });
         console.log(`Backend server is started in http://localhost:${PORT}`)
-        websocketAPI();
+        websocket();
     });
 } catch (e) {
     console.log(e)

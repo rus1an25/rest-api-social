@@ -8,7 +8,7 @@ const WebSocketAPI = require('./Components/Services/webSocketAPI');
 
 const webSocket = new WebSocketAPI();
 
-const websocketAPI = () => {
+const websocket = () => {
     const app = express();
     dotenv.config();
 
@@ -81,4 +81,4 @@ const websocketAPI = () => {
     });
 };
 
-module.exports = websocketAPI;
+module.exports = websocket;
