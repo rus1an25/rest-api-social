@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 class profileController {
     async setLogo (req, res) {
         try {
-            return res.json({statusCode: 0, logo: `http://localhost:${5000}/default/logo-social.png`});
+            return res.json({statusCode: 0, logo: `${process.env.API_URL}/default/logo-social.png`});
         } catch (e) {
             return res.json(e);
         }
