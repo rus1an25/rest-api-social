@@ -1,4 +1,4 @@
-const webSocketsServerPort = 8000;
+const webSocketsServerPort = process.env.PORT || 8000;
 const express = require('express');
 const dotenv = require('dotenv');
 const helmet = require("helmet");

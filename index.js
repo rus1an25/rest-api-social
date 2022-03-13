@@ -49,7 +49,7 @@ try {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log(`Backend server is started in http://localhost:${PORT}`)
+        console.log(`Backend server is started in ${process.env.API_URL}:${PORT}`)
         websocket();
     });
 } catch (e) {
