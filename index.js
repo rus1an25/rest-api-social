@@ -18,8 +18,9 @@ const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
 const PORT = process.env.SERVER_PORT || 5000;
 const app = express();
+//https://socia1.herokuapp.com
 app.use(cors({
-    "origin": "https://socia1.herokuapp.com",
+    "origin": "*",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
