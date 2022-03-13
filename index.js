@@ -20,7 +20,7 @@ const PORT = process.env.SERVER_PORT || 5000;
 const app = express();
 //https://socia1.herokuapp.com
 app.use(cors({
-    "origin": "*",
+    "origin": "https://socia1.herokuapp.com",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
