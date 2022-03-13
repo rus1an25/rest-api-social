@@ -16,9 +16,8 @@ const conversationsRouter = require('./Components/Routers/conversationsRouter');
 const websocket = require('./websocket');
 const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
-const PORT = process.env.SERVER_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 const app = express();
-//https://socia1.herokuapp.com
 app.use(cors({
     "origin": "https://socia1.herokuapp.com",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
