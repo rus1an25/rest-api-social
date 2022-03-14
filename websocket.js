@@ -1,4 +1,4 @@
-const webSocketsServerPort = parseInt(process.env.PORT) + 1 || 8000;
+const webSocketsServerPort = 8000;
 const express = require('express');
 const dotenv = require('dotenv');
 const helmet = require("helmet");
@@ -19,7 +19,7 @@ const websocket = () => {
     //======================================================================================================
     try {
         const server = http.createServer(app);
-        server.listen(webSocketsServerPort, '0.0.0.0',() => {
+        server.listen(webSocketsServerPort, () => {
             console.log(`WebSocket Server is started on port:${webSocketsServerPort}`)
         });
 
