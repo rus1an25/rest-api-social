@@ -19,7 +19,7 @@ const websocket = () => {
     //======================================================================================================
     try {
         const server = http.createServer(app);
-        server.listen(webSocketsServerPort, () => {
+        server.listen(webSocketsServerPort, 'wss://api-app-social.herokuapp.com/',() => {
             console.log(`WebSocket Server is started on port:${webSocketsServerPort}`)
         });
 
