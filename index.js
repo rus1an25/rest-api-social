@@ -11,16 +11,13 @@ const authRouter = require('./Components/Routers/authRouter.js');
 const usersRouter = require('./Components/Routers/usersRouter.js');
 const postsRouter = require('./Components/Routers/postsRouter.js');
 const profileRouter = require('./Components/Routers/profileRouter');
-const messagesRouter = require('./Components/Routers/messagesRouter');
 const conversationsRouter = require('./Components/Routers/conversationsRouter');
-const websocket = require('./websocket');
 const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors({
-    // "origin": "https://socia1.herokuapp.com",
-    "origin": "http://localhost:3000",
+    "origin": "https://socia1.herokuapp.com",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
@@ -42,7 +39,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/conversations', conversationsRouter);
-// app.use('/api/messages', messagesRouter);
 
 try {
     app.listen(PORT, async () => {
@@ -51,7 +47,6 @@ try {
             useUnifiedTopology: true
         });
         console.log(`Backend server is started in ${process.env.API_URL}:${PORT}`)
-        await websocket();
     });
 } catch (e) {
     console.log(e)

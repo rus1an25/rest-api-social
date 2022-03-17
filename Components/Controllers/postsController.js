@@ -1,4 +1,3 @@
-const usersService = require('../Services/usersService.js');
 const Post = require('../Models/Post.js');
 const User = require('../Models/User.js');
 

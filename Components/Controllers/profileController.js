@@ -1,5 +1,3 @@
-// const fileService = require('../Services/fileService.js');
-// const fs = require("fs");
 const User = require('./../Models/User.js');
 const fileService = require('../Services/fileService.js');
 const fs = require("fs");
@@ -16,7 +14,6 @@ class profileController {
 
     async setUserStatus (req, res) {
         try {
-            // console.log(req.params.currentUserID, req.body.statusText)
             const user = await User.findById(req.params.currentUserID);
             await user.updateOne({userStatus: req.body.statusText});
             return res.json({statusCode: 0, message: "Your status has been updated successfully!"});
@@ -27,7 +24,6 @@ class profileController {
 
     async getUserStatus (req, res) {
         try {
-            //console.log(req.params.currentUserID)
             const user = await User.findById(req.params.currentUserID);
             return res.json(user.userStatus);
         } catch (e) {

@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-// const validationResult = require('express-validator').validationResult;
 const {validationResult} = require('express-validator')
 const fs = require("fs");
 const mkdirp = require('mkdirp');
@@ -107,7 +106,7 @@ class authController {
         }
     }
 
-    async login (req, res, next) {
+    async login (req, res) {
         try {
             const {userName, password} = req.body;
             const userData = await userService.login(userName, password);
@@ -119,7 +118,7 @@ class authController {
         }
     }
 
-    async logout (req, res, next) {
+    async logout (req, res) {
         try {
             const refreshToken = req.cookies;
             const token = await userService.logout(refreshToken);
@@ -139,14 +138,6 @@ class authController {
             return res.json(userData);
         } catch (e) {
             next(e);
-        }
-    }
-
-    async getTestUsers (req, res) {
-        try {
-            return res.json(['user1', 'user2']);
-        } catch (e) {
-            return res.json(e);
         }
     }
 }
