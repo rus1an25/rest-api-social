@@ -51,7 +51,7 @@ try {
             useUnifiedTopology: true
         });
         console.log(`Backend server is started in ${process.env.API_URL}:${PORT}`)
-        websocket();
+        await websocket();
     });
 } catch (e) {
     console.log(e)
