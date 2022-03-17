@@ -1,10 +1,10 @@
 const webSocketsServerPort = 8000;
 const express = require('express');
 const dotenv = require('dotenv');
-const helmet = require("helmet");
+// const helmet = require("helmet");
 // const webSocketServer = require('websocket').server;
 const { Server } = require('ws');
-const http = require('http');
+// const http = require('http');
 const WebSocketAPI = require('./Components/Services/webSocketAPI');
 
 const webSocket = new WebSocketAPI();
@@ -14,7 +14,7 @@ const websocket = () => {
     dotenv.config();
 
     app.use(express.json());
-    app.use(helmet());
+    // app.use(helmet());
 
     // Spinning the http server and the websocket server.
     //======================================================================================================
@@ -35,10 +35,10 @@ const websocket = () => {
 
         const conversationsOnline = {};
 
-        wss.on('request', function(request) {
-            const connection = request.accept(null, process.env.CLIENT_URL);
+        wss.on('connection', function(ws) {
+            // const connection = request.accept(null, process.env.CLIENT_URL);
 
-            connection.on('message', async (message) => {
+            ws.on('message', async (message) => {
                 let currentUserID = null;
                 console.log('MESSAGE', message)
                 if (message.type === 'utf8' && JSON.parse(message.utf8Data).type === 'CURRENT_USER_ID' && JSON.parse(message.utf8Data).userId !== null) {
