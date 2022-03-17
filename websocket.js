@@ -94,14 +94,13 @@ const express = require('express');
 const path = require('path');
 const { Server } = require('ws');
 
-const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || `http://localhost:${process.env.PORT}`;
+const PORT = process.env.PORT || 4000;
+const HOST = process.env.HOST || `http://localhost:${PORT}`;
 const INDEX = '/index.html';
 
 const app = express();
 
 const server = app
-    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
     .listen(PORT, () => console.log(`Listening on ${HOST}`));
 
 const wss = new Server({ server });
