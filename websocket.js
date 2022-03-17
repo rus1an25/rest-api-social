@@ -2,7 +2,8 @@ const webSocketsServerPort = 8000;
 const express = require('express');
 const dotenv = require('dotenv');
 const helmet = require("helmet");
-const webSocketServer = require('websocket').server;
+// const webSocketServer = require('websocket').server;
+const { Server } = require('ws');
 const http = require('http');
 const WebSocketAPI = require('./Components/Services/webSocketAPI');
 
@@ -18,21 +19,23 @@ const websocket = () => {
     // Spinning the http server and the websocket server.
     //======================================================================================================
     try {
-        const server = http.createServer(app);
-        server.listen(webSocketsServerPort, () => {
-            console.log(`WebSocket Server is started on port:${webSocketsServerPort}`)
+        const server = app
+            .listen(webSocketsServerPort, () => {
+                console.log(`WebSocket Server is started on port:${webSocketsServerPort}`)
         });
 
-        const wsServer = new webSocketServer({
-            httpServer: server
-        });
+        // const wsServer = new webSocketServer({
+        //     httpServer: server
+        // });
+
+        const wss = new Server({ server });
 
         // I'm maintaining all active connections in this object
         const usersOnline = {};
 
         const conversationsOnline = {};
 
-        wsServer.on('request', function(request) {
+        wss.on('request', function(request) {
             const connection = request.accept(null, process.env.CLIENT_URL);
 
             connection.on('message', async (message) => {
