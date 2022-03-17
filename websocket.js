@@ -94,14 +94,14 @@ const express = require('express');
 const path = require('path');
 const { Server } = require('ws');
 
-const PORT = process.env.PORT || 4000;
-const HOST = process.env.HOST || `http://localhost:${PORT}`;
-const INDEX = '/index.html';
+// const PORT = process.env.PORT || 4000;
+    const webSocketsServerPort = 8000;
+    const HOST = process.env.HOST || `http://localhost:${webSocketsServerPort}`;
 
 const app = express();
 
 const server = app
-    .listen(PORT, () => console.log(`Listening on ${HOST}`));
+    .listen(webSocketsServerPort, () => console.log(`Listening on ${HOST}`));
 
 const wss = new Server({ server });
 
