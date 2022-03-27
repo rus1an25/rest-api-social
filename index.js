@@ -53,6 +53,7 @@ io.on("connection", (socket) => {
 
     socket.on("SEND_MESSAGE_REQ", async (data) => {
         const message = await messageController.createMessage(data);
+        console.log('SEND_MESSAGE_REQ\n', message);
         socket.emit("SEND_MESSAGE_RES", message);
         if (connections[data.companionId] !== undefined && connections[data.companionId].length > 0) {
             connections[data.companionId].forEach(connection => io.to(connection).emit("SEND_MESSAGE_RES", message))
