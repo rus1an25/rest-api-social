@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
+const {Server} = require("socket.io");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -14,8 +16,64 @@ const profileRouter = require('./Components/Routers/profileRouter');
 const conversationsRouter = require('./Components/Routers/conversationsRouter');
 const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
-const PORT = process.env.PORT || 5000;
+const conversationsController = require('./Components/Controllers/conversationController');
+const messageController = require('./Components/Controllers/messagesController');
+
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "https://socia1.herokuapp.com",
+        methods: ["GET", "POST"]
+    }
+});
+
+const connections = {};
+
+io.on("connection", (socket) => {
+    socket.on("CURRENT_USER_ID", (userID) => {
+        if (!connections.hasOwnProperty(userID)) {
+            connections[userID] = [socket.id]
+        } else {
+            connections[userID].push(socket.id);
+        }
+        socket.emit("SOCKET_ID", socket.id);
+    });
+
+    socket.on("GET_CONVERSATION_REQ", async (data) => {
+        const conversation = await conversationsController.getConversation(data.userId, data.companionId);
+        socket.emit("GET_CONVERSATION_RES", conversation._id);
+    });
+
+    socket.on("GET_MESSAGES_REQ", async (data) => {
+        const messages = await messageController.getMessages(data);
+        socket.emit("GET_MESSAGES_RES", messages);
+    });
+
+    socket.on("SEND_MESSAGE_REQ", async (data) => {
+        const message = await messageController.createMessage(data);
+        socket.emit("SEND_MESSAGE_RES", message);
+        if (connections[data.companionId] !== undefined && connections[data.companionId].length > 0) {
+            connections[data.companionId].forEach(connection => io.to(connection).emit("SEND_MESSAGE_RES", message))
+        }
+    });
+
+
+
+    socket.on('disconnect', () => {
+        for (let prop in connections) {
+            if (connections[prop].includes(socket.id)) {
+                let newArr = connections[prop].filter(prop => prop !== socket.id);
+                connections[prop] = newArr;
+            }
+            console.log(connections[prop])
+        }
+        console.log('disconnected:', socket.id);
+    });
+});
+
+const PORT = process.env.PORT || 5000;
 app.use(cors({
     "origin": "https://socia1.herokuapp.com",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -41,13 +99,14 @@ app.use('/api/profile', profileRouter);
 app.use('/api/conversations', conversationsRouter);
 
 try {
-    app.listen(PORT, async () => {
+    server.listen(PORT, async () => {
         await mongoose.connect(process.env.DB_MONGO_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log(`Backend server is started in ${process.env.API_URL}:${PORT}`)
+        console.log(`Backend server is started in ${process.env.API_URL}`);
     });
+
 } catch (e) {
     console.log(e)
 }

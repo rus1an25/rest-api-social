@@ -15,7 +15,6 @@ class usersController {
     async getUsersByPortion (req, res) {
         try {
             const users = await usersService.getUsers(req.params.currentUserID, req.params.sortParam);
-            console.log(users);
             if (users.length !== 0) {
                 const currentUserFollowings = await User.findById(req.params.currentUserID);
                 let page = req.params.pageNumber;
@@ -130,7 +129,7 @@ class usersController {
         } catch (e) {
             return res.json(e);
         }
-    }
+    };
 }
 
 module.exports = new usersController();

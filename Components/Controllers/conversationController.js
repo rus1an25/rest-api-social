@@ -46,14 +46,14 @@ class conversationController {
         }
     }
 
-    async getConversations (req, res) {
+    async getConversation (senderID, receiverID) {
         try {
-            const conversations = await Conversation.findOne({
-                members: {$all: [req.params.companionID, req.params.currentUserID]}
-            })
-            return res.status(200).json(conversations._id);
+            const conversation = await Conversation.findOne({
+                members: {$all: [senderID, receiverID]}
+            });
+            return conversation;
         } catch (e) {
-            return res.json(e);
+            return e;
         }
     }
 }

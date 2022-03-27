@@ -1,4 +1,5 @@
 const User = require('../Models/User.js');
+const Conversation = require('../Models/Conversation.js');
 const mailService = require('./mailService.js');
 const tokenService = require('./tokenService.js');
 const UserDTO = require('./../dtos/user_dto.js');
@@ -129,8 +130,7 @@ class usersService {
                 }
             }
         }
-    }
-
+    };
 }
 
 module.exports = new usersService();
