@@ -25,7 +25,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "https://socia1.herokuapp.com",
+        origin: `${process.env.CLIENT_URL}`,
         // origin: "http://localhost:3000",
         methods: ["GET", "POST"]
     }
@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    "origin": "https://socia1.herokuapp.com",
+    "origin": `${process.env.CLIENT_URL}`,
     // "origin": "http://localhost:3000",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
