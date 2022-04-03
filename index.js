@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fs = require("fs");
 const express = require('express');
 const http = require('http');
 const {Server} = require("socket.io");
@@ -24,8 +25,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "https://socia1.herokuapp.com",
-        // origin: "http://localhost:3000",
+        // origin: "https://socia1.herokuapp.com",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"]
     }
 });
@@ -35,7 +36,7 @@ const connections = {};
 io.on("connection", (socket) => {
     socket.on("CURRENT_USER_ID", (userID) => {
         if (!connections.hasOwnProperty(userID)) {
-            connections[userID] = [socket.id]
+            connections[userID] = [socket.id];
         } else {
             connections[userID].push(socket.id);
         }
@@ -54,7 +55,6 @@ io.on("connection", (socket) => {
 
     socket.on("SEND_MESSAGE_REQ", async (data) => {
         const message = await messageController.createMessage(data);
-        console.log('SEND_MESSAGE_REQ\n', message);
         socket.emit("SEND_MESSAGE_RES", message);
         if (connections[data.companionId] !== undefined && connections[data.companionId].length > 0) {
             connections[data.companionId].forEach(connection => io.to(connection).emit("SEND_MESSAGE_RES", message))
@@ -77,8 +77,8 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    "origin": "https://socia1.herokuapp.com",
-    // "origin": "http://localhost:3000",
+    // "origin": "https://socia1.herokuapp.com",
+    "origin": "http://localhost:3000",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
