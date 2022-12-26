@@ -21,14 +21,14 @@ class conversationController {
         }
     }
 
-    async getCompanions (req, res) {
+    async getCompanions (currentUserID) {
         try {
             const conversations = await Conversation.find({
-                members: {$in: [req.params.currentUserID]}
+                members: {$in: [currentUserID]}
             })
             const companionsId = conversations.map(c => {
                 return {
-                    companionId: c.members.filter(id => id !== req.params.currentUserID),
+                    companionId: c.members.filter(id => id !== currentUserID),
                     conversationId: c._id
                 }
             });
@@ -37,12 +37,14 @@ class conversationController {
             }));
             let users = companions.map(companion => ({
                 id: companion.id,
-                userName: companion.userName,
+                firstName: companion.firstName,
+                lastName: companion.lastName,
                 thumbnail: companion.thumbnail
             }));
-            return res.status(200).json(users);
+            // return res.status(200).json(users);
+            return users;
         } catch (e) {
-            return res.json(e);
+            return e;
         }
     }
 

@@ -10,8 +10,8 @@ class authController {
         try {
             const user = await User.findById(req.body._id);
             if (user) {
-                const {userName, email, password} = user;
-                return res.status(200).json({id: user._id, statusCode: 0, userName, email, password})
+                const {firstName, lastName, email, password} = user;
+                return res.status(200).json({id: user._id, statusCode: 0, firstName, lastName, email, password})
             } else {
                 return res.status(200).json({statusCode: 1, message: "That user not found!"});
             }
@@ -86,8 +86,8 @@ class authController {
             if (!errors.isEmpty()) {
                 return res.json({message: "Error during validation", errors});
             }
-            const {userName, email, password} = req.body;
-            const userData = await userService.registrationUser(userName, email, password);
+            const {firstName, lastName, email, password} = req.body;
+            const userData = await userService.registrationUser(firstName, lastName, email, password);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 3 * 60 * 1000, httpOnly: true});
             return res.json(userData);
 
@@ -108,9 +108,8 @@ class authController {
 
     async login (req, res) {
         try {
-            const {userName, password} = req.body;
-            console.log(userName, password);
-            const userData = await userService.login(userName, password);
+            const {mail, password} = req.body;
+            const userData = await userService.login(mail, password);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 3 * 60 * 1000, httpOnly: true});
             return res.json(userData);
         } catch (e) {
@@ -134,7 +133,6 @@ class authController {
             const {refreshToken} = req.cookies;
             const userData = await userService.refresh(refreshToken);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 3 * 60 * 1000, httpOnly: true});
-            console.log(userData)
             return res.json(userData);
         } catch (e) {
             next(e);

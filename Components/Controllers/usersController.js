@@ -25,6 +25,7 @@ class usersController {
                 let j = 0;
                 let newArr = [];
                 let totalCount = users.length;
+
                 if (page > Math.ceil(totalCount / count)) {
                     res.status(200).json(newArr);
                 } else {

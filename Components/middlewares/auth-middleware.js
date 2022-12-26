@@ -10,9 +10,7 @@ module.exports = function (req, res, next) {
             if (!accessToken) {
                 return res.json({resultCode: 1, message: "User is unauthorized!"});
             } else {
-                console.log(accessToken)
                 const userData = tokenService.validateAccessToken(accessToken);
-                console.log(userData)
                 if (!userData) {
                     return res.json({resultCode: 1, message: "User is unauthorized!"});
                 } else {

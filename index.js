@@ -19,6 +19,8 @@ const errorMiddleware = require('./Components/middlewares/error-middleware.js');
 
 const conversationsController = require('./Components/Controllers/conversationController');
 const messageController = require('./Components/Controllers/messagesController');
+const profileController = require('./Components/Controllers/profileController');
+const conversationController = require('./Components/Controllers/conversationController');
 
 const app = express();
 const server = http.createServer(app);
@@ -35,50 +37,61 @@ const connections = {};
 
 io.on("connection", (socket) => {
     socket.on("CURRENT_USER_ID", (userID) => {
+        console.log('CONNECTION_userID', userID);
         if (!connections.hasOwnProperty(userID)) {
             connections[userID] = [socket.id];
         } else {
             connections[userID].push(socket.id);
         }
-        socket.emit("SOCKET_ID", socket.id);
+        const values = Object.keys(connections);
+        socket.emit("GET_USERS_ONLINE", values);
     });
 
-    socket.on("GET_CONVERSATION_REQ", async (data) => {
+    socket.on("GET_COMPANIONS_LIST", async (userId) => {
+        const companions = await conversationController.getCompanions(userId);
+        socket.emit("GET_COMPANIONS_LIST_REQ", companions);
+    });
+
+    socket.on("GET_CONVERSATION", async (data) => {
         const conversation = await conversationsController.getConversation(data.userId, data.companionId);
-        socket.emit("GET_CONVERSATION_RES", conversation._id);
+        socket.emit("GET_CONVERSATION_REQ", conversation._id.toString());
     });
 
-    socket.on("GET_MESSAGES_REQ", async (data) => {
-        const messages = await messageController.getMessages(data);
-        socket.emit("GET_MESSAGES_RES", messages);
+    socket.on("GET_MESSAGES", async (conversationId) => {
+        console.log("GET_MESSAGES: ", conversationId)
+        const messages = await messageController.getMessages(conversationId);
+        socket.emit("GET_MESSAGES_REQ", messages);
     });
 
-    socket.on("SEND_MESSAGE_REQ", async (data) => {
+    socket.on("SEND_MESSAGE", async (data) => {
         const message = await messageController.createMessage(data);
-        socket.emit("SEND_MESSAGE_RES", message);
+        socket.emit("SEND_MESSAGE_REQ", message);
         if (connections[data.companionId] !== undefined && connections[data.companionId].length > 0) {
-            connections[data.companionId].forEach(connection => io.to(connection).emit("SEND_MESSAGE_RES", message))
+            connections[data.companionId].forEach(connection => io.to(connection).emit("SEND_MESSAGE_REQ", message))
         }
+        console.log('SEND_MESSAGE_REQ: ', message)
     });
 
-
-
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
+        let discConnect = null;
         for (let prop in connections) {
             if (connections[prop].includes(socket.id)) {
+                await profileController.updateLastSeen(prop);
+                discConnect = connections[prop];
                 let newArr = connections[prop].filter(prop => prop !== socket.id);
                 connections[prop] = newArr;
             }
-            console.log(connections[prop])
+            if (connections[prop].length === 0) delete connections[prop];
+
         }
-        console.log('disconnected:', socket.id);
+        console.log('disconnected:', connections);
     });
 });
 
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    "origin": `${process.env.CLIENT_URL}`,
-    // "origin": "http://localhost:3000",
+    // "origin": `${process.env.CLIENT_URL}`,
+    "origin": "http://localhost:3000",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,

@@ -8,8 +8,7 @@ const PostSchema = new mongoose.Schema({
     },
     author: {
         type: String,
-        require: true,
-        default: ""
+        default: ''
     },
     postText: {
         type: String,

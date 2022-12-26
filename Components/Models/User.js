@@ -1,25 +1,27 @@
 const {Schema, model} = require('mongoose');
 
 const UserSchema = new Schema({
-    userName: {type: String, unique: true, require: true, min: 3, max: 20},
+    firstName: {type: String, unique: false, require: true, min: 3, max: 20},
+    lastName: {type: String, unique: false, require: true, min: 3, max: 20},
     password: {type: String, require: true, min: 3, max: 20},
     email: {type: String, unique: true, require: true},
     isActivated: {type: Boolean, default: false},
     activationLink: {type: String, default: ""},
-    userStatus: {type: String, max: 50, default: ""},
+    education: {type: Object, max: 50, default: {}},
     aboutMe: {type: String, max: 50, default: ""},
     jobDescription: {type: String, max: 50, default: ""},
-    facebook: {type: String, max: 50, default: ""},
-    telegram: {type: String, max: 50, default: ""},
-    github: {type: String, max: 50, default: ""},
-    website: {type: String, max: 50, default: ""},
-    city: {type: String, max: 50, default: ""},
+    phoneNumber: {type: String, max: 50, default: ""},
+    techSkills: {type: Array, default: []},
+    softSkills: {type: Array, default: []},
+    projects: {type: Array, default: []},
+    experience: {type: Array, default: []},
     profilePicture: {type: String, default: `${process.env.API_URL}/default/avatar-user.png`},
     thumbnail: {type: String, default: `${process.env.API_URL}/default/avatar-user.png`},
     followers: {type: Array, default: []},
     followings: {type: Array, default: []},
     isLogged: {type: Boolean, default: false},
-    posts: {type: Array, default: []}
+    posts: {type: Array, default: []},
+    lastSeen: {type: String, default: ''}
 }, {
     timestamps: true
 });

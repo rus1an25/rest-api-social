@@ -11,15 +11,18 @@ const ApiError = require('./../exceptions/api-error.js');
 
 class usersService {
     async getUsers (currentUserID, sortParam) {
+        let timeNow = Date.now();
         if (sortParam === 'all') {
             const allUsers = await User.find();
             const users = allUsers.filter(user => user._id.toString() !== currentUserID)
                 .map(user => ({
                     id: user._id,
-                    userName: user.userName,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                     userStatus: user.userStatus,
                     thumbnail: user.thumbnail,
-                    isLogged: user.isLogged
+                    isLogged: user.isLogged,
+                    lastSeen: Math.round((timeNow - parseInt(user.lastSeen)) / 1000 / 60)
                 }));
             return users;
         } else if (sortParam === 'followings') {
@@ -27,20 +30,24 @@ class usersService {
             const currentUserFollowings = await Promise.all(currentUser.followings.map(friendId => User.findById(friendId)));
             const followings = currentUserFollowings.map(following => ({
                 id: following._id,
-                userName: following.userName,
+                firstName: following.firstName,
+                lastName: following.lastName,
                 userStatus: following.userStatus,
                 thumbnail: following.thumbnail,
-                isLogged: following.isLogged
+                isLogged: following.isLogged,
+                lastSeen: Math.round((timeNow - parseInt(following.lastSeen)) / 1000 / 60)
             }));
             return followings;
         }  else if (sortParam === 'followers') {
             const users = await User.find({followings: currentUserID});
             const followers = users.map(follower => ({
                 id: follower._id,
-                userName: follower.userName,
+                firstName: follower.firstName,
+                lastName: follower.lastName,
                 userStatus: follower.userStatus,
                 thumbnail: follower.thumbnail,
-                isLogged: follower.isLogged
+                isLogged: follower.isLogged,
+                lastSeen: Math.round((timeNow - parseInt(follower.lastSeen)) / 1000 / 60)
             }))
             return followers;
         }
@@ -49,23 +56,28 @@ class usersService {
     async getUser (userId) {
         const user = await User.findById(userId);
         const {password, createdAt, updatedAt, ...other} = user._doc;
-        const {_id, userName, profilePicture, thumbnail, aboutMe, jobDescription, facebook, telegram, github, website, city} = other;
-        const info = {id: _id, userName, aboutMe, jobDescription}
-        const contacts = {facebook, telegram, github, website, city};
+        const {_id, firstName, lastName, profilePicture, thumbnail,
+            aboutMe, jobDescription, phoneNumber,
+            email, techSkills, softSkills,
+            education, educPeriod, educProfess, educCountry, projects,
+            experience} = other;
+        const info = {id: _id, firstName, lastName, aboutMe, jobDescription, techSkills, softSkills,
+            education, educPeriod, educProfess, educCountry, projects,
+            experience};
+        const contacts = {phoneNumber, email};
         const photos = {profilePicture, thumbnail};
         return {info, contacts, photos};
     }
 
-    async registrationUser (userName, email, password) {
-        const candidateByName = await User.findOne({userName});
+    async registrationUser (firstName, lastName, email, password) {
         const candidateByMail = await User.findOne({email});
-        if (candidateByName || candidateByMail) {
+        if (candidateByMail) {
             // throw ApiError.BadRequest(`User with the same ${email} is exists!`)
-            return {resultCode: 1, message: `User with the same Name or Email is exists!`};
+            return {resultCode: 1, message: `User with the same Email is exists!`};
         }
         const hashedPassword = await bcrypt.hash(password, 7);
         const activationLink = uuid.v4();
-        const user = await User.create({userName, email, password: hashedPassword, activationLink});
+        const user = await User.create({firstName, lastName, email, password: hashedPassword, activationLink});
         fs.mkdirSync(`./images/photos/${user._id}/large`, { recursive: true });
         fs.mkdirSync(`./images/photos/${user._id}/small`);
         await mailService.sendActivationMail(email, `${process.env.API_URL}/api/auth/activation/${activationLink}`);
@@ -78,15 +90,14 @@ class usersService {
     async activationUser (activationLink) {
         const user = await User.findOne({activationLink});
         if (!user) {
-            // throw new ApiError.BadRequest('Incorrect link activation');
             return {codeResult: 1, message: 'Incorrect link activation'};
         }
         user.isActivated = true;
         await user.save();
     }
 
-    async login (userName, password) {
-        const user = await User.findOne({userName});
+    async login (email, password) {
+        const user = await User.findOne({email});
         if (!user) {
             // throw new ApiError.BadRequest('Incorrect link activation');
             return {resultCode: 1, message: 'User not found!'};

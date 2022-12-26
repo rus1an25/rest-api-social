@@ -19,7 +19,6 @@ class MailService {
         });
     }
     async sendActivationMail (to, link) {
-        console.log('filePath:', `"${filePath}"`)
         await this.transporter.sendMail({
             from: process.env.SMTP_USER,
             to,
