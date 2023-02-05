@@ -1,13 +1,10 @@
 const User = require('../Models/User.js');
-const Conversation = require('../Models/Conversation.js');
 const mailService = require('./mailService.js');
 const tokenService = require('./tokenService.js');
 const UserDTO = require('./../dtos/user_dto.js');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const ApiError = require('./../exceptions/api-error.js');
 
 class usersService {
     async getUsers (currentUserID, sortParam) {

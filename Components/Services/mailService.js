@@ -1,7 +1,5 @@
 const nodemailer = require('nodemailer');
 const path = require("path");
-// const filePath = path.join(__dirname, '../../images/default/logo-social.png');
-const filePath = path.resolve(`./images/default`, 'logo-social.png');
 
 class MailService {
     constructor() {

@@ -1,6 +1,5 @@
 const Post = require('../Models/Post.js');
 const User = require('../Models/User.js');
-const objectId = require("mongoose").ObjectId;
 
 class postsController {
     async createPost(req, res) {
@@ -32,7 +31,7 @@ class postsController {
             return res.json(e);
         }
     }
-    ///////////////////////////////////////////////////////////////////////////////////
+
     async getPostsBySorting (req, res) {
         try {
             const portion = (posts, currentPostPage, countPosts) => {
@@ -111,7 +110,6 @@ class postsController {
             return res.json({statusCode: 1, errors: e});
         }
     }
-    ///////////////////////////////////////////////////////////////////////////////////
 
     async getAllPosts(req, res) {
         try {
